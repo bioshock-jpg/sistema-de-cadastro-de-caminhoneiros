@@ -5,7 +5,7 @@ import shutil
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
 
-# --- 1. SUA LÓGICA DE CONFIGURAÇÃO DE PASTAS ---
+#logica de configuração de pastas
 PASTA_RAIZ = "central_documentos"
 PASTA_MOTORISTAS = os.path.join(PASTA_RAIZ, "motoristas")
 ARQUIVO_BANCO = os.path.join(PASTA_RAIZ, "banco_dados.json")
@@ -26,7 +26,7 @@ def salvar_banco(dados):
         json.dump(dados, f, indent=4, ensure_ascii=False)
 
 
-# --- 2. ESTRUTURA DA INTERFACE GRÁFICA ---
+#interface grafica
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
 
@@ -55,9 +55,9 @@ class AppSistemaCNH(ctk.CTk):
         self.montar_aba_cadastro()
         self.montar_aba_busca()
 
-    # ================= CONSTRUÇÃO DA TELA DE CADASTRO =================
+    #construção da tela de cadastro
     def montar_aba_cadastro(self):
-        # Título
+        #título
         lbl = ctk.CTkLabel(
             self.tab_cadastro,
             text="Cadastro do Novo Motorista",
@@ -65,25 +65,25 @@ class AppSistemaCNH(ctk.CTk):
         )
         lbl.pack(pady=15)
 
-        # Container dos campos
+        #container dos campos
         frame_campos = ctk.CTkFrame(self.tab_cadastro)
         frame_campos.pack(pady=10, padx=20, fill="x")
 
-        # Campo Nome
+        #campo Nome
         ctk.CTkLabel(frame_campos, text="Nome Completo:").grid(
             row=0, column=0, padx=10, pady=10, sticky="w"
         )
         self.txt_nome = ctk.CTkEntry(frame_campos, width=450)
         self.txt_nome.grid(row=0, column=1, padx=10, pady=10, columnspan=2)
 
-        # Campo CPF
+        #campo CPF
         ctk.CTkLabel(frame_campos, text="CPF (apenas números):").grid(
             row=1, column=0, padx=10, pady=10, sticky="w"
         )
         self.txt_cpf = ctk.CTkEntry(frame_campos, width=200)
         self.txt_cpf.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
-        # Campo Placa
+        #campo Placa
         ctk.CTkLabel(frame_campos, text="Placa do Veículo:").grid(
             row=2, column=0, padx=10, pady=10, sticky="w"
         )
@@ -92,7 +92,7 @@ class AppSistemaCNH(ctk.CTk):
         )
         self.txt_placa.grid(row=2, column=1, padx=10, pady=10, sticky="w")
 
-        #Campo da Placa da Carga Caminhao
+        #campo da Placa da Carga Caminhao
         ctk.CTkLabel(frame_campos, text="Placa da Carga Caminhão").grid(
             row=3, column=0, padx=10, pady=10, sticky="w"
         )
@@ -101,7 +101,7 @@ class AppSistemaCNH(ctk.CTk):
         )
         self.txt_carga.grid(row=3, column=1, padx=10, pady=10, sticky="w")
 
-        # Seção de Documento
+        #seção de documento
         frame_doc = ctk.CTkFrame(self.tab_cadastro)
         frame_doc.pack(pady=10, padx=20, fill="x")
 
@@ -119,7 +119,7 @@ class AppSistemaCNH(ctk.CTk):
         )
         self.lbl_status_doc.grid(row=0, column=1, padx=10, pady=10, sticky="w")
 
-        # Botão Final de Salvar
+        #botão para salvar
         self.btn_salvar = ctk.CTkButton(
             self.tab_cadastro,
             text="Salvar Cadastro",
@@ -166,7 +166,7 @@ class AppSistemaCNH(ctk.CTk):
             )
             return
 
-        # Cria pasta do motorista
+        #cria pasta do motorista
         pasta_do_motorista = os.path.join(PASTA_MOTORISTAS, nome)
         os.makedirs(pasta_do_motorista, exist_ok=True)
 
@@ -182,7 +182,7 @@ class AppSistemaCNH(ctk.CTk):
             shutil.copy(self.caminho_documento_selecionado, destino_final)
             documentos_salvos.append(nome_arquivo)
 
-        # Salva no JSON
+        #salva no JSON
         banco[cpf] = {
             "nome": nome,
             "placa": placa,
@@ -206,7 +206,7 @@ class AppSistemaCNH(ctk.CTk):
             text="Nenhum arquivo selecionado", text_color="yellow"
         )
 
-    # ================= CONSTRUÇÃO DA TELA DE BUSCA =================
+    #construção da tela de busca
     def montar_aba_busca(self):
         lbl = ctk.CTkLabel(
             self.tab_busca,
@@ -215,7 +215,7 @@ class AppSistemaCNH(ctk.CTk):
         )
         lbl.pack(pady=15)
 
-        # Barra de Busca
+        #barra de busca
         frame_busca = ctk.CTkFrame(self.tab_busca)
         frame_busca.pack(pady=10, padx=20, fill="x")
 
@@ -226,7 +226,7 @@ class AppSistemaCNH(ctk.CTk):
         )
         self.txt_busca.grid(row=0, column=0, padx=10, pady=10)
 
-        # Vincula a tecla 'Enter' para também disparar a busca automaticamente
+        #vincula a tecla 'Enter' para também disparar a busca automaticamente
         self.txt_busca.bind("<Return>", lambda event: self.executar_busca())
 
         btn_buscar = ctk.CTkButton(
@@ -234,7 +234,7 @@ class AppSistemaCNH(ctk.CTk):
         )
         btn_buscar.grid(row=0, column=1, padx=10, pady=10)
 
-        # Caixa de Resultados (Substitui o print do terminal)
+        #caixa de resultados (Substitui o print do terminal)
         self.txt_resultado = ctk.CTkTextbox(self.tab_busca, width=680, height=280)
         self.txt_resultado.pack(pady=15)
         self.txt_resultado.configure(state="disabled")
@@ -257,7 +257,7 @@ class AppSistemaCNH(ctk.CTk):
             """Evita erro caso o nome venha vazio"""
             nome_motorista = info.get("nome", "").lower()
 
-        # Ativa o campo de texto para conseguir limpar e escrever os resultados
+        #ativa o campo de texto para conseguir limpar e escrever os resultados
         self.txt_resultado.configure(state="normal")
         self.txt_resultado.delete("1.0", "end")
 
@@ -291,14 +291,14 @@ class AppSistemaCNH(ctk.CTk):
                     self.txt_resultado.insert("1.0", texto_acumulado)
                     self.txt_resultado.configure(state="disable")
                 else:
-                    # Caso não encontre ninguém
+                    #caso não encontre ninguém
                     self.txt_resultado.configure(state="normal")
                     self.txt_resultado.delete("1.0", "end")
                     self.txt_resultado.insert("1.0", "❌ Nenhum motorista encontrado.")
                     self.txt_resultado.configure(state="disabled")
 
         self.txt_resultado.insert("1.0", texto_acumulado)
-        # Bloqueia o campo novamente para o usuário não apagar o resultado sem querer
+        #bloqueia o campo novamente para o usuário não apagar o resultado sem querer
         self.txt_resultado.configure(state="disabled")
 
 
