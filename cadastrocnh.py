@@ -41,10 +41,10 @@ class AppSistemaCNH(ctk.CTk):
         self.resizable(False, False)
         self.caminho_documento_selecionado = ""
 
-        # Variável temporária para guardar o arquivo selecionado no cadastro
+        #variável temporária para guardar o arquivo selecionado no cadastro
         self.caminho_documento_selecionado = ""
 
-        # --- CRIAÇÃO DAS ABAS (Menu Principal) ---
+        #criação das abas (Menu Principal)
         self.abas = ctk.CTkTabview(self, width=720, height=520)
         self.abas.pack(pady=10, padx=10)
 
@@ -133,7 +133,7 @@ class AppSistemaCNH(ctk.CTk):
         self.btn_salvar.pack(pady=20)
 
     def selecionar_arquivo(self):
-        """Abre a janela nativa do sistema para escolher o arquivo."""
+        #abre a janela nativa do sistema para escolher o arquivo
         caminho = filedialog.askopenfilename(
             title="Selecione o Documento do Motorista",
             filetypes=[("Arquivos de Documento", "*.pdf *.png *.jpg *.jpeg")],
@@ -146,7 +146,7 @@ class AppSistemaCNH(ctk.CTk):
             )
 
     def executar_cadastro(self):
-        """Função 'cadastrar_motorista' adaptada para a Interface Gráfica."""
+        #Função 'cadastrar_motorista' adaptada para a Interface Gráfica
         nome = self.txt_nome.get().strip()
         cpf = self.txt_cpf.get().strip()
         placa = self.txt_placa.get().strip().upper()
@@ -171,7 +171,7 @@ class AppSistemaCNH(ctk.CTk):
         os.makedirs(pasta_do_motorista, exist_ok=True)
 
         documentos_salvos = []
-        # Valida se o usuário selecionou o documento pela janela flutuante
+        #Valida se o usuário selecionou o documento pela janela flutuante
         if (
             self.caminho_documento_selecionado
             and os.path.exists(self.caminho_documento_selecionado)
@@ -196,7 +196,7 @@ class AppSistemaCNH(ctk.CTk):
             "Sucesso", f"🎉 Motorista {nome} cadastrado com sucesso!"
         )
 
-        # Limpa o formulário para o próximo
+        #limpa o formulário para o próximo
         self.txt_nome.delete(0, "end")
         self.txt_cpf.delete(0, "end")
         self.txt_placa.delete(0, "end")
@@ -240,7 +240,7 @@ class AppSistemaCNH(ctk.CTk):
         self.txt_resultado.configure(state="disabled")
 
     def executar_busca(self):
-        """Função 'buscar_motorista' adaptada para a Interface Gráfica."""
+        #Função 'buscar_motorista' adaptada para a Interface Gráfica
         termo_busca = self.txt_busca.get().strip().lower()
 
         if not termo_busca:
@@ -249,12 +249,12 @@ class AppSistemaCNH(ctk.CTk):
         banco = carregar_banco()
         encontrado = False
 
-        """Variavel para juntar o texto dos resultados"""
+        #variavel para juntar o texto dos resultados
         texto_acumulado =""
 
-        """Loop que varre o banco de dados"""
+        #Loop que varre o banco de dados
         for cpf, info in banco.items():
-            """Evita erro caso o nome venha vazio"""
+            #Evita erro caso o nome venha vazio
             nome_motorista = info.get("nome", "").lower()
 
         #ativa o campo de texto para conseguir limpar e escrever os resultados
@@ -270,7 +270,7 @@ class AppSistemaCNH(ctk.CTk):
                 texto_acumulado += f"   CPF: {cpf}\n"
                 texto_acumulado += f"   Placa: {info.get('placa', 'Não informada')}\n"
 
-                """Correção caso o valor JSON for None ou não exitir"""
+                #correção caso o valor JSON for None ou não exitir
                 carga_salva = info.get('carga')
                 carga_exibida = carga_salva if carga_salva else 'Não informada'
                 texto_acumulado += f"   Carga: {carga_exibida}\n"
@@ -284,7 +284,7 @@ class AppSistemaCNH(ctk.CTk):
                 texto_acumulado += f"{'-'*60}\n\n"
                 encontrado = True
 
-                """Exibe o resultado na interface (ajusta o nome do componente de texto se for diferente)"""
+                #exibe o resultado na interface (ajusta o nome do componente de texto se for diferente)
                 if encontrado:
                     self.txt_resultado.configure(state="normal")
                     self.txt_resultado.delete("1.0", "end")
