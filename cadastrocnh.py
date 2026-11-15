@@ -1,6 +1,7 @@
 
 import json
 import os
+import sys
 import shutil
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
@@ -25,6 +26,11 @@ def salvar_banco(dados):
     with open(ARQUIVO_BANCO, "w", encoding="utf-8") as f:
         json.dump(dados, f, indent=4, ensure_ascii=False)
 
+def caminho_recurso(relativo):
+    #encontra o arquivo de ícone mesmo dentro do executavel
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relativo)
+    return os.path.join(os.path.abspath("."), relativo)
 
 #interface grafica
 ctk.set_appearance_mode("Dark")
@@ -39,6 +45,12 @@ class AppSistemaCNH(ctk.CTk):
         self.title("SISTEMA DE ARMAZENAMENTO DE CNH")
         self.geometry("750x550")
         self.resizable(False, False)
+        
+        try:
+            self.iconbitmap(caminho_recurso("icone.ico"))
+        except Exception:
+            pass
+        
         self.caminho_documento_selecionado = ""
 
         #variável temporária para guardar o arquivo selecionado no cadastro

@@ -1,0 +1,5 @@
+build/
+dist/
+central_documentos/
+__pycache__/
+*.spec
