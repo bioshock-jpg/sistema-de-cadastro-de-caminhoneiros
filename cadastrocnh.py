@@ -43,7 +43,7 @@ class AppSistemaCNH(ctk.CTk):
         super().__init__()
 
         self.title("SISTEMA DE ARMAZENAMENTO DE CNH")
-        self.geometry("750x550")
+        self.geometry("750x640")
         self.resizable(False, False)
         
         try:
@@ -122,6 +122,15 @@ class AppSistemaCNH(ctk.CTk):
         )
         self.txt_carga.grid(row=4, column=1, padx=10, pady=10, sticky="w")
 
+        #campo do Número da ANTT
+        ctk.CTkLabel(frame_campos, text="Número da ANTT (RNTRC):").grid(
+            row=5, column=0, padx=10, pady=10, sticky="w"
+        )
+        self.txt_antt = ctk.CTkEntry(
+            frame_campos, width=200, placeholder_text="Ex: 12345678"
+        )
+        self.txt_antt.grid(row=5, column=1, padx=10, pady=10, sticky="w")
+
         #seção de documento
         frame_doc = ctk.CTkFrame(self.tab_cadastro)
         frame_doc.pack(pady=10, padx=20, fill="x")
@@ -173,6 +182,7 @@ class AppSistemaCNH(ctk.CTk):
         telefone = self.txt_telefone.get().strip()
         placa = self.txt_placa.get().strip().upper()
         carga = self.txt_carga.get().strip().upper()
+        antt = self.txt_antt.get().strip()
 
         if not nome or not cpf or not placa or not carga:
             messagebox.showwarning(
@@ -210,6 +220,7 @@ class AppSistemaCNH(ctk.CTk):
             "placa": placa,
             "carga": carga,
             "telefone": telefone,
+            "antt": antt,
             "pasta": pasta_do_motorista,
             "documentos": documentos_salvos,
         }
@@ -224,6 +235,7 @@ class AppSistemaCNH(ctk.CTk):
         self.txt_cpf.delete(0, "end")
         self.txt_placa.delete(0, "end")
         self.txt_carga.delete(0, "end")
+        self.txt_antt.delete(0, "end")
         self.caminho_documento_selecionado = ""
         self.lbl_status_doc.configure(
             text="Nenhum arquivo selecionado", text_color="yellow"
@@ -262,6 +274,18 @@ class AppSistemaCNH(ctk.CTk):
         self.txt_resultado.pack(pady=15)
         self.txt_resultado.configure(state="disabled")
 
+        #botão para abrir a caixa de motorista encontrado
+        self.btn_abrir_pasta = ctk.CTkButton(
+            self.tab_busca,
+            text="📁 Abrir Pasta para Compartilhar Docs",
+            command=self.abrir_pasta_motorista,
+            fg_color="green",
+            hover_color="darkgreen",
+            height=38,
+            font=("Arial", 13, "bold"),
+        )
+        self.btn_abrir_pasta.pack(pady=(5, 15))
+
     def executar_busca(self):
         #Função 'buscar_motorista' adaptada para a Interface Gráfica
         termo_busca = self.txt_busca.get().strip().lower()
@@ -286,6 +310,9 @@ class AppSistemaCNH(ctk.CTk):
 
         texto_acumulado = ""
 
+        #limpa a memoria antes do inicio de uma nova busca
+        self.pasta_encontrada = ""
+
         for cpf, info in banco.items():
             if termo_busca in cpf or termo_busca in info.get("nome", "").lower():
                 texto_acumulado += f"📌 Motorista Encontrado:\n"
@@ -299,11 +326,14 @@ class AppSistemaCNH(ctk.CTk):
                 carga_exibida = carga_salva if carga_salva else 'Não informada'
                 texto_acumulado += f"   Carga: {carga_exibida}\n"
 
+                texto_acumulado += f"   ANTT: {info.get('antt') or 'Não informada'}\n"
+
                 documentos = info.get('documentos', [])
                 texto_acumulado += f"   Arquivos Salvos: {', '.join(documentos) if documentos else 'Nenhum'}\n"
 
                 pasta = info.get('pasta', '.')
-                texto_acumulado += f"   📂 Pasta no PC: {os.path.abspath(pasta)}\n"
+                self.pasta_encontrada = os.path.abspath(pasta)
+                texto_acumulado += f"   📂 Pasta no PC: {self.pasta_encontrada}\n"
 
                 texto_acumulado += f"{'-'*60}\n\n"
                 encontrado = True
@@ -324,7 +354,16 @@ class AppSistemaCNH(ctk.CTk):
         self.txt_resultado.insert("1.0", texto_acumulado)
         #bloqueia o campo novamente para o usuário não apagar o resultado sem querer
         self.txt_resultado.configure(state="disabled")
-
+    
+    def abrir_pasta_motorista(self):
+        #abre a pasta do motorista encontrado no Explore
+        if hasattr(self, "pasta_encontrada") and self.pasta_encontrada and os.path.exists(self.pasta_encontrada):
+            os.startfile(self.pasta_encontrada)
+        else:
+            messagebox.showwarning(
+                "Aviso",
+                "Busque um motorista válido primeiro para abrir a pasta de documentos"
+            )
 
 if __name__ == "__main__":
     app = AppSistemaCNH()
