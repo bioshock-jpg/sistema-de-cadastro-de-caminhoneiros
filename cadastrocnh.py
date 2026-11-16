@@ -95,23 +95,32 @@ class AppSistemaCNH(ctk.CTk):
         self.txt_cpf = ctk.CTkEntry(frame_campos, width=200)
         self.txt_cpf.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
+        #campo Telefone/WhatsApp
+        ctk.CTkLabel(frame_campos, text="Telefone/WhatsApp").grid(
+            row=2, column=0, padx=10, pady=10, sticky="w"
+        )
+        self.txt_telefone = ctk.CTkEntry(
+            frame_campos, width=200, placeholder_text="Ex: (87) 99999-9999"
+        )
+        self.txt_telefone.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+
         #campo Placa
         ctk.CTkLabel(frame_campos, text="Placa do Veículo:").grid(
-            row=2, column=0, padx=10, pady=10, sticky="w"
+            row=3, column=0, padx=10, pady=10, sticky="w"
         )
         self.txt_placa = ctk.CTkEntry(
             frame_campos, width=200, placeholder_text="Ex: ABC-1D23"
         )
-        self.txt_placa.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+        self.txt_placa.grid(row=3, column=1, padx=10, pady=10, sticky="w")
 
         #campo da Placa da Carga Caminhao
         ctk.CTkLabel(frame_campos, text="Placa da Carga Caminhão").grid(
-            row=3, column=0, padx=10, pady=10, sticky="w"
+            row=4, column=0, padx=10, pady=10, sticky="w"
         )
         self.txt_carga = ctk.CTkEntry(
             frame_campos, width=200, placeholder_text="Ex: ABC-1D23"
         )
-        self.txt_carga.grid(row=3, column=1, padx=10, pady=10, sticky="w")
+        self.txt_carga.grid(row=4, column=1, padx=10, pady=10, sticky="w")
 
         #seção de documento
         frame_doc = ctk.CTkFrame(self.tab_cadastro)
@@ -161,6 +170,7 @@ class AppSistemaCNH(ctk.CTk):
         #Função 'cadastrar_motorista' adaptada para a Interface Gráfica
         nome = self.txt_nome.get().strip()
         cpf = self.txt_cpf.get().strip()
+        telefone = self.txt_telefone.get().strip()
         placa = self.txt_placa.get().strip().upper()
         carga = self.txt_carga.get().strip().upper()
 
@@ -199,6 +209,7 @@ class AppSistemaCNH(ctk.CTk):
             "nome": nome,
             "placa": placa,
             "carga": carga,
+            "telefone": telefone,
             "pasta": pasta_do_motorista,
             "documentos": documentos_salvos,
         }
@@ -281,6 +292,7 @@ class AppSistemaCNH(ctk.CTk):
                 texto_acumulado += f"   Nome: {info.get('nome', 'Não informado')}\n"
                 texto_acumulado += f"   CPF: {cpf}\n"
                 texto_acumulado += f"   Placa: {info.get('placa', 'Não informada')}\n"
+                texto_acumulado += f"   Telefone: {info.get('telefone') or 'Não informado'}\n"
 
                 #correção caso o valor JSON for None ou não exitir
                 carga_salva = info.get('carga')
